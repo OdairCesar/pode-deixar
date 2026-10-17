@@ -182,7 +182,7 @@ Os prazos entre colchetes serão estimados pelo time depois da leitura deste doc
 | Fase | Entregas | Critério de aceite |
 | --- | --- | --- |
 | 1 · Protótipo | OpenClaw e ai-memory configurados; Camada com RF-01 a RF-20; fluxos da seção Fluxos principais | Todos os requisitos passam nos testes internos; custo de IA por empresa medido (RNF-07) |
-| 2 · Piloto | \[3\] negócios de um nicho usando por \[\_\_\] semanas; ajustes a partir do uso real | \[**%\] das tarefas concluídas sem intervenção; menos de \[**\] perguntas por tarefa; pilotos querem continuar |
+| 2 · Piloto | \[3\] negócios de um nicho usando por \[\_\_\] semanas; ajustes a partir do uso real | \[\_\_%\] das tarefas concluídas sem intervenção; menos de \[\_\_\] perguntas por tarefa; pilotos querem continuar |
 | 3 · Lançamento | Produção em nuvem; API oficial do WhatsApp Business; processo de implantação | RNF-01 a RNF-08 atendidos; novo cliente implantado em \[\_\_\] dias |
 
 ## Decisões pendentes e riscos

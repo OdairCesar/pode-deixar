@@ -14,6 +14,8 @@ Reutilizar duas ferramentas open source e concentrar o desenvolvimento próprio 
 
 ## Documentação
 
+O [index.html](index.html) na raiz reúne a apresentação e a especificação numa página só, pronta para o GitHub Pages (Settings → Pages → Deploy from a branch → branch `main`, pasta `/ (root)`).
+
 - [Especificação técnica (MVP)](docs/especificacao-tecnica-mvp.md) — escopo, arquitetura, requisitos (RF-01 a RF-20), modelo de dados, segurança e plano de entregas.
 - [Proposta](docs/proposta.pdf) ([pptx](docs/proposta.pptx) / [html](docs/proposta.html))
 

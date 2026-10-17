@@ -1,0 +1,395 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pode Deixar</title>
+<meta name="description" content="Pode Deixar — assistente executiva de IA para pequenos negócios, operada pelo WhatsApp. Proposta e especificação técnica do MVP.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400..700;1,9..40,400&family=Fraunces:ital,opsz,wght@0,9..144,500..700;1,9..144,500&display=swap">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%2310241F'/%3E%3Ctext x='16' y='22.5' text-anchor='middle' font-family='Georgia,serif' font-size='18' font-weight='700' fill='%23F08A5D'%3EP%3C/text%3E%3C/svg%3E">
+<style>
+  :root {
+    --ink: #10241F;
+    --ink-2: #44524E;
+    --ink-3: #5E6B67;
+    --bg: #F5F2EA;
+    --surface: #FFFCF6;
+    --line: #E2DBCD;
+    --accent: #A9441F;
+    --accent-soft: #FFD9C2;
+    --coral: #F08A5D;
+    --green: #2E7D6B;
+    --hero-bg: #10241F;
+    --hero-ink: #F5F2EA;
+    --hero-ink-2: #B9C8C2;
+    --code-bg: #EFEADF;
+    --shadow: 0 1px 2px rgb(16 36 31 / .06), 0 8px 24px rgb(16 36 31 / .08);
+    color-scheme: light;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --ink: #EDE8DC;
+      --ink-2: #C3CCC8;
+      --ink-3: #93A19C;
+      --bg: #0C1A16;
+      --surface: #13261F;
+      --line: #25403A;
+      --accent: #F08A5D;
+      --accent-soft: #3A2A20;
+      --green: #6BC2AC;
+      --hero-bg: #08130F;
+      --code-bg: #0F201B;
+      --shadow: 0 1px 2px rgb(0 0 0 / .3), 0 8px 24px rgb(0 0 0 / .3);
+      color-scheme: dark;
+    }
+  }
+  :root[data-theme="dark"] {
+    --ink: #EDE8DC;
+    --ink-2: #C3CCC8;
+    --ink-3: #93A19C;
+    --bg: #0C1A16;
+    --surface: #13261F;
+    --line: #25403A;
+    --accent: #F08A5D;
+    --accent-soft: #3A2A20;
+    --green: #6BC2AC;
+    --hero-bg: #08130F;
+    --code-bg: #0F201B;
+    --shadow: 0 1px 2px rgb(0 0 0 / .3), 0 8px 24px rgb(0 0 0 / .3);
+    color-scheme: dark;
+  }
+
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; scroll-padding-top: 72px; }
+  @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font: 400 17px/1.6 "DM Sans", system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  a { color: var(--accent); text-underline-offset: 3px; }
+  .wrap { max-width: 1180px; margin: 0 auto; padding: 0 16px; }
+  @media (min-width: 720px) { .wrap { padding: 0 32px; } }
+
+  /* Top bar */
+  .topbar {
+    position: sticky; top: 0; z-index: 10;
+    background: color-mix(in srgb, var(--hero-bg) 92%, transparent);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgb(255 255 255 / .06);
+  }
+  .topbar .wrap { display: flex; align-items: center; justify-content: space-between; height: 56px; gap: 16px; }
+  .brand { font: 700 19px/1 "Fraunces", Georgia, serif; color: var(--hero-ink); text-decoration: none; letter-spacing: -.01em; }
+  .brand span { color: var(--coral); }
+  .topnav { display: flex; gap: 4px; }
+  .topnav a {
+    color: var(--hero-ink-2); text-decoration: none; font-size: 15px; font-weight: 500;
+    padding: 6px 12px; border-radius: 999px;
+  }
+  .topnav a:hover { color: var(--hero-ink); background: rgb(255 255 255 / .08); }
+
+  /* Hero */
+  .hero { background: var(--hero-bg); color: var(--hero-ink); padding: 56px 0 72px; }
+  .eyebrow { font-size: 13px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; color: var(--coral); margin: 0 0 16px; }
+  .hero h1 {
+    font: 600 clamp(40px, 7vw, 76px)/1.02 "Fraunces", Georgia, serif;
+    letter-spacing: -.025em; margin: 0 0 20px; max-width: 14ch;
+  }
+  .hero h1 em { font-style: italic; color: var(--coral); }
+  .hero .lede { font-size: clamp(17px, 2.2vw, 21px); color: var(--hero-ink-2); max-width: 46ch; margin: 0 0 32px; }
+  .cards { display: grid; gap: 16px; grid-template-columns: 1fr; }
+  @media (min-width: 720px) { .cards { grid-template-columns: 1fr 1fr; } }
+  .card {
+    display: block; text-decoration: none; color: var(--hero-ink);
+    background: rgb(255 255 255 / .05); border: 1px solid rgb(255 255 255 / .1);
+    border-radius: 16px; padding: 20px 22px;
+    transition: background .15s, border-color .15s;
+  }
+  .card:hover { background: rgb(255 255 255 / .09); border-color: rgb(240 138 93 / .5); }
+  .card h2 { font: 600 22px/1.2 "Fraunces", Georgia, serif; margin: 0 0 6px; display: flex; justify-content: space-between; gap: 12px; }
+  .card h2::after { content: "→"; color: var(--coral); font-family: "DM Sans", sans-serif; }
+  .card p { margin: 0; color: var(--hero-ink-2); font-size: 15px; }
+
+  /* Sections */
+  section.block { padding: 64px 0 24px; }
+  .section-head { display: flex; flex-wrap: wrap; align-items: end; justify-content: space-between; gap: 16px; margin-bottom: 24px; }
+  .section-head h2 { font: 600 clamp(28px, 4vw, 40px)/1.1 "Fraunces", Georgia, serif; letter-spacing: -.02em; margin: 0; }
+  .section-head p { margin: 6px 0 0; color: var(--ink-3); font-size: 15px; }
+  .actions { display: flex; flex-wrap: wrap; gap: 8px; }
+  .btn {
+    display: inline-flex; align-items: center; gap: 6px;
+    font: 500 14px/1 "DM Sans", sans-serif; color: var(--ink);
+    background: var(--surface); border: 1px solid var(--line);
+    padding: 9px 14px; border-radius: 999px; text-decoration: none; cursor: pointer;
+  }
+  .btn:hover { border-color: var(--accent); color: var(--accent); }
+  .btn.primary { background: var(--accent); border-color: var(--accent); color: #FFFCF6; }
+  .btn.primary:hover { filter: brightness(1.08); color: #FFFCF6; }
+  :root[data-theme="dark"] .btn.primary { color: #10241F; }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .btn.primary { color: #10241F; } }
+
+  /* Slides */
+  .deck-frame {
+    position: relative; width: 100%; aspect-ratio: 16 / 9;
+    background: #000; border-radius: 14px; overflow: hidden;
+    box-shadow: var(--shadow);
+  }
+  .deck-frame iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+  .hint { color: var(--ink-3); font-size: 14px; margin: 12px 0 0; }
+  kbd {
+    font: 500 12px/1 "DM Sans", sans-serif; padding: 3px 6px; border-radius: 5px;
+    border: 1px solid var(--line); background: var(--surface); color: var(--ink-2);
+  }
+
+  /* Spec */
+  .spec-layout { display: grid; gap: 40px; grid-template-columns: 1fr; }
+  @media (min-width: 1000px) { .spec-layout { grid-template-columns: 220px minmax(0, 1fr); } }
+  .toc { display: none; }
+  @media (min-width: 1000px) {
+    .toc { display: block; position: sticky; top: 80px; align-self: start; max-height: calc(100vh - 100px); overflow: auto; }
+  }
+  .toc p { font-size: 12px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; color: var(--ink-3); margin: 0 0 10px; }
+  .toc ol { list-style: none; margin: 0; padding: 0; border-left: 1px solid var(--line); }
+  .toc a {
+    display: block; padding: 5px 0 5px 14px; margin-left: -1px; border-left: 2px solid transparent;
+    color: var(--ink-3); text-decoration: none; font-size: 14px; line-height: 1.35;
+  }
+  .toc a:hover { color: var(--ink); }
+  .toc a.active { color: var(--accent); border-left-color: var(--accent); }
+
+  .doc {
+    background: var(--surface); border: 1px solid var(--line); border-radius: 16px;
+    padding: 24px 20px 40px; min-width: 0;
+  }
+  @media (min-width: 720px) { .doc { padding: 40px 48px 56px; } }
+  .doc > :first-child { margin-top: 0; }
+  .doc .byline { color: var(--ink-3); font-size: 14px; margin: 0 0 8px; }
+  .doc h2 {
+    font: 600 26px/1.2 "Fraunces", Georgia, serif; letter-spacing: -.01em;
+    margin: 48px 0 12px; padding-top: 24px; border-top: 1px solid var(--line);
+  }
+  .doc h2:first-of-type { border-top: 0; padding-top: 0; margin-top: 16px; }
+  .doc h3 { font-size: 18px; margin: 28px 0 8px; }
+  .doc p, .doc li { color: var(--ink-2); max-width: 72ch; }
+  .doc strong { color: var(--ink); }
+  .doc ul, .doc ol { padding-left: 22px; }
+  .doc li { margin: 4px 0; }
+  .doc li:has(> input[type="checkbox"]) { list-style: none; margin-left: -22px; }
+  .doc input[type="checkbox"] { accent-color: var(--accent); margin-right: 8px; }
+  .table-wrap { overflow-x: auto; margin: 16px 0 24px; border: 1px solid var(--line); border-radius: 10px; }
+  .doc table { border-collapse: collapse; width: 100%; font-size: 15px; line-height: 1.45; }
+  .doc th, .doc td { text-align: left; vertical-align: top; padding: 10px 14px; border-bottom: 1px solid var(--line); }
+  .doc th { background: var(--bg); color: var(--ink); font-weight: 600; font-size: 13px; letter-spacing: .02em; white-space: nowrap; }
+  .doc tr:last-child td { border-bottom: 0; }
+  .doc td { color: var(--ink-2); }
+  .doc td:first-child { white-space: nowrap; color: var(--ink); font-weight: 500; }
+  .doc pre {
+    background: var(--code-bg); border: 1px solid var(--line); border-radius: 10px;
+    padding: 16px 18px; overflow-x: auto; font-size: 14px; line-height: 1.55;
+  }
+  .doc code { font-family: ui-monospace, "SF Mono", Consolas, monospace; font-size: .9em; }
+  .doc :not(pre) > code { background: var(--code-bg); padding: 1px 6px; border-radius: 5px; }
+  .doc figure { margin: 24px 0; }
+  .doc figure a { display: block; background: #fff; border: 1px solid var(--line); border-radius: 12px; padding: 12px; }
+  .doc figure img { display: block; width: 100%; height: auto; }
+  .doc figcaption { color: var(--ink-3); font-size: 13px; margin-top: 8px; }
+  .doc .status { color: var(--ink-3); }
+
+  footer { padding: 48px 0 56px; color: var(--ink-3); font-size: 14px; }
+  footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px; border-top: 1px solid var(--line); padding-top: 24px; }
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="wrap">
+    <a class="brand" href="#">Pode Deixar<span>.</span></a>
+    <nav class="topnav" aria-label="Seções">
+      <a href="#apresentacao">Apresentação</a>
+      <a href="#especificacao">Especificação</a>
+    </nav>
+  </div>
+</header>
+
+<div class="hero">
+  <div class="wrap">
+    <p class="eyebrow">Proposta · MVP</p>
+    <h1>Uma assistente que responde <em>“pode deixar”</em>.</h1>
+    <p class="lede">Assistente executiva de IA para pequenos negócios, operada pelo WhatsApp. Recebe instruções em texto ou áudio, executa tarefas administrativas e aprende o negócio com o uso.</p>
+    <div class="cards">
+      <a class="card" href="#apresentacao">
+        <h2>Apresentação</h2>
+        <p>16 slides: oportunidade, solução, arquitetura, modelo de negócio e as decisões da reunião.</p>
+      </a>
+      <a class="card" href="#especificacao">
+        <h2>Especificação técnica</h2>
+        <p>Escopo do MVP, arquitetura, requisitos RF-01 a RF-20, modelo de dados, segurança e plano de entregas.</p>
+      </a>
+    </div>
+  </div>
+</div>
+
+<main>
+  <section class="block" id="apresentacao">
+    <div class="wrap">
+      <div class="section-head">
+        <div>
+          <h2>Apresentação</h2>
+          <p>A proposta apresentada aos sócios.</p>
+        </div>
+        <div class="actions">
+          <button class="btn primary" type="button" id="fullscreen">Tela cheia</button>
+          <a class="btn" href="docs/proposta.html" target="_blank" rel="noopener">Abrir em nova aba</a>
+          <a class="btn" href="docs/proposta.pdf" target="_blank" rel="noopener">PDF</a>
+          <a class="btn" href="docs/proposta.pptx" target="_blank" rel="noopener">PPTX</a>
+        </div>
+      </div>
+      <div class="deck-frame">
+        <iframe id="deck" src="docs/proposta.html" title="Apresentação Pode Deixar" allow="fullscreen" allowfullscreen loading="lazy"></iframe>
+      </div>
+      <p class="hint">Clique nos slides e use <kbd>←</kbd> <kbd>→</kbd> ou role para navegar.</p>
+    </div>
+  </section>
+
+  <section class="block" id="especificacao">
+    <div class="wrap">
+      <div class="section-head">
+        <div>
+          <h2>Especificação técnica</h2>
+          <p>O que construir, o que configurar e como cada entrega será aceita.</p>
+        </div>
+        <div class="actions">
+          <a class="btn" href="docs/especificacao-tecnica-mvp.pdf" target="_blank" rel="noopener">PDF</a>
+          <a class="btn" href="docs/especificacao-tecnica-mvp.docx" target="_blank" rel="noopener">DOCX</a>
+          <a class="btn" href="docs/especificacao-tecnica-mvp.md" target="_blank" rel="noopener">Markdown</a>
+        </div>
+      </div>
+      <div class="spec-layout">
+        <nav class="toc" aria-label="Índice da especificação">
+          <p>Nesta especificação</p>
+          <ol id="toc"></ol>
+        </nav>
+        <article class="doc" id="spec">
+          <p class="status">Carregando a especificação…</p>
+        </article>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>Pode Deixar · projeto em fase de protótipo</span>
+    <a href="#">Voltar ao topo ↑</a>
+  </div>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/marked/12.0.2/marked.min.js"></script>
+<script src="docs/especificacao-tecnica-mvp.js"></script>
+<script>
+  // Tela cheia do deck
+  document.getElementById('fullscreen').addEventListener('click', function () {
+    var frame = document.getElementById('deck');
+    var req = frame.requestFullscreen || frame.webkitRequestFullscreen;
+    if (req) { req.call(frame); frame.focus(); }
+    else { window.open('docs/proposta.html', '_blank'); }
+  });
+
+  // Diagramas que no Markdown aparecem como "[embedded content: ...]"
+  var FIGURES = [
+    { src: 'docs/img/arquitetura-mvp.png', alt: 'Arquitetura do MVP: WhatsApp, OpenClaw, Camada de Inteligência Pessoal e ai-memory' },
+    { src: 'docs/img/fluxo-tarefa.png', alt: 'Execução de uma tarefa: três verificações da Camada antes de o OpenClaw agir' },
+    { src: 'docs/img/plano-entregas.png', alt: 'Plano de entregas: três fases e três portões' }
+  ];
+
+  function slugify(text) {
+    return text.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '')
+      .replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+  }
+
+  function renderSpec(md) {
+    var i = 0;
+    md = md.replace(/^&#91;embedded content: (.+?)\\\][ \t]*$/gm, function (_, caption) {
+      var f = FIGURES[i++];
+      if (!f) return '';
+      return '\n<figure><a href="' + f.src + '" target="_blank" rel="noopener"><img src="' + f.src +
+        '" alt="' + f.alt + '" loading="lazy"></a><figcaption>' + caption + '</figcaption></figure>\n';
+    });
+
+    var spec = document.getElementById('spec');
+    spec.innerHTML = marked.parse(md, { gfm: true });
+
+    // O título já está no cabeçalho da seção; a linha seguinte vira byline.
+    var h1 = spec.querySelector('h1');
+    if (h1 && h1 === spec.firstElementChild) {
+      var next = h1.nextElementSibling;
+      if (next && next.tagName === 'P') next.className = 'byline';
+      h1.remove();
+    }
+
+    spec.querySelectorAll('table').forEach(function (t) {
+      var wrap = document.createElement('div');
+      wrap.className = 'table-wrap';
+      t.parentNode.insertBefore(wrap, t);
+      wrap.appendChild(t);
+    });
+    spec.querySelectorAll('a[href^="http"]').forEach(function (a) {
+      a.target = '_blank'; a.rel = 'noopener';
+    });
+
+    var toc = document.getElementById('toc');
+    var links = [];
+    spec.querySelectorAll('h2').forEach(function (h) {
+      h.id = 'spec-' + slugify(h.textContent);
+      var li = document.createElement('li');
+      var a = document.createElement('a');
+      a.href = '#' + h.id;
+      a.textContent = h.textContent;
+      li.appendChild(a);
+      toc.appendChild(li);
+      links.push({ a: a, h: h });
+    });
+
+    if ('IntersectionObserver' in window) {
+      var io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (e) {
+          if (!e.isIntersecting) return;
+          links.forEach(function (l) { l.a.classList.toggle('active', l.h === e.target); });
+        });
+      }, { rootMargin: '-80px 0px -70% 0px' });
+      links.forEach(function (l) { io.observe(l.h); });
+    }
+
+    if (location.hash.indexOf('#spec-') === 0) {
+      var target = document.getElementById(location.hash.slice(1));
+      if (target) target.scrollIntoView();
+    }
+  }
+
+  function fail(reason) {
+    document.getElementById('spec').innerHTML =
+      '<p class="status">Não foi possível carregar a especificação aqui (' + reason + '). ' +
+      'Abra o <a href="docs/especificacao-tecnica-mvp.pdf" target="_blank" rel="noopener">PDF</a> ou o ' +
+      '<a href="docs/especificacao-tecnica-mvp.md" target="_blank" rel="noopener">Markdown</a>.</p>';
+  }
+
+  // No servidor (GitHub Pages) lê o .md direto; aberto do disco (file://), onde
+  // fetch é bloqueado, usa a cópia gerada por scripts/build-spec.js.
+  function fallback() {
+    if (typeof window.SPEC_MD === 'string') renderSpec(window.SPEC_MD);
+    else fail('arquivo docs/especificacao-tecnica-mvp.js ausente');
+  }
+
+  if (typeof marked === 'undefined') fail('a biblioteca marked não carregou — verifique a conexão');
+  else if (location.protocol === 'file:') fallback();
+  else fetch('docs/especificacao-tecnica-mvp.md', { cache: 'no-cache' })
+    .then(function (r) { if (!r.ok) throw new Error(r.status); return r.text(); })
+    .then(renderSpec)
+    .catch(fallback);
+</script>
+</body>
+</html>
